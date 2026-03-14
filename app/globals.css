@@ -1,0 +1,233 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* =============================================
+   CSS VARIABLES
+============================================= */
+:root {
+  --bg:            #080808;
+  --bg-surface:    #0f0f0f;
+  --bg-card:       #111111;
+  --bg-card-hover: #161616;
+
+  --border:        #1e1e1e;
+  --border-accent: rgba(223, 255, 0, 0.3);
+
+  --accent:        #dfff00;
+  --accent-dim:    rgba(223, 255, 0, 0.15);
+  --accent-glow:   rgba(223, 255, 0, 0.08);
+
+  --text:          #e8e8e8;
+  --text-muted:    #666666;
+  --text-faint:    #333333;
+
+  --font-mono:     var(--font-mono, "JetBrains Mono", monospace);
+  --font-display:  var(--font-display, "Syne", sans-serif);
+
+  --radius:        4px;
+  --radius-lg:     8px;
+  --transition:    0.2s ease;
+}
+
+/* =============================================
+   RESET & BASE
+============================================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-mono);
+  line-height: 1.7;
+  overflow-x: hidden;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+/* =============================================
+   SELECTION
+============================================= */
+::selection {
+  background: rgba(223, 255, 0, 0.25);
+  color: var(--accent);
+}
+
+/* =============================================
+   SCROLLBAR
+============================================= */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(223, 255, 0, 0.2);
+}
+
+/* =============================================
+   LAYOUT UTILITIES
+============================================= */
+.container {
+  max-width: 1100px;
+  margin-inline: auto;
+  padding-inline: 2rem;
+}
+
+/* =============================================
+   SECTION BASE
+============================================= */
+.section {
+  padding-block: 7rem;
+  border-top: 1px solid var(--border);
+}
+
+.section-header {
+  display: flex;
+  align-items: baseline;
+  gap: 1rem;
+  margin-bottom: 3.5rem;
+}
+
+.section-index {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+  opacity: 0.6;
+  letter-spacing: 0.1em;
+}
+
+.section-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+
+/* =============================================
+   BUTTONS
+============================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-radius: var(--radius);
+  transition: all var(--transition);
+  cursor: pointer;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+}
+.btn-primary:hover {
+  background: transparent;
+  color: var(--accent);
+  box-shadow: 0 0 20px var(--accent-dim), 0 0 40px rgba(223, 255, 0, 0.05);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--text);
+  border-color: var(--border);
+}
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow: 0 0 16px var(--accent-glow);
+}
+
+/* =============================================
+   TAGS / PILLS
+============================================= */
+.tag {
+  display: inline-block;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  transition: all var(--transition);
+}
+.tag:hover {
+  border-color: var(--border-accent);
+  color: var(--text);
+}
+.tag-accent {
+  border-color: var(--border-accent);
+  color: var(--accent);
+  background: var(--accent-glow);
+}
+
+/* =============================================
+   SCROLL-REVEAL (JS adds .revealed)
+============================================= */
+.reveal {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =============================================
+   RESPONSIVE
+============================================= */
+@media (max-width: 768px) {
+  .section {
+    padding-block: 5rem;
+  }
+  .container {
+    padding-inline: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .container {
+    padding-inline: 1.25rem;
+  }
+}
