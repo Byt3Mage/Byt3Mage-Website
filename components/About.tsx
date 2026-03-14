@@ -8,7 +8,7 @@ export default function About() {
           gap: 2.5rem 3.5rem;
           align-items: start;
         }
-        @media (max-width: 620px) {
+        @media (max-width: 768px) {
           .about-body { grid-template-columns: 1fr; }
           .about-bio, .about-blog { grid-column: 1 !important; }
         }
@@ -94,7 +94,7 @@ export default function About() {
         style={{
           fontFamily: "'Space Mono', monospace",
           background: "#060608",
-          padding: "6rem 2rem",
+          padding: "6rem clamp(1rem, 4vw, 3rem)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -114,7 +114,7 @@ export default function About() {
 
         <div
           style={{
-            maxWidth: 820,
+            maxWidth: "100%",
             margin: "0 auto",
             position: "relative",
             zIndex: 1,

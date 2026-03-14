@@ -105,7 +105,7 @@ export default function Contact() {
         style={{
           fontFamily: "'Space Mono', monospace",
           background: "#060608",
-          padding: "6rem 2rem",
+          padding: "6rem clamp(1rem, 4vw, 3rem)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -125,7 +125,7 @@ export default function Contact() {
 
         <div
           style={{
-            maxWidth: 780,
+            maxWidth: "100%",
             margin: "0 auto",
             position: "relative",
             zIndex: 1,

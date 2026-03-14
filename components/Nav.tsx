@@ -37,9 +37,9 @@ export default function Nav() {
       {/* Desktop row */}
       <div
         style={{
-          maxWidth: 1100,
+          maxWidth: "100%",
           margin: "0 auto",
-          padding: "0 2rem",
+          padding: "0 clamp(1rem, 4vw, 3rem)",
           height: 56,
           display: "flex",
           alignItems: "center",
@@ -128,7 +128,7 @@ export default function Nav() {
             flexDirection: "column",
             gap: "1rem",
             borderTop: "1px solid var(--border)",
-            padding: "1rem 2rem",
+            padding: "1rem clamp(1rem, 4vw, 3rem)",
           }}
         >
           {links.map(({ href, label }) => (

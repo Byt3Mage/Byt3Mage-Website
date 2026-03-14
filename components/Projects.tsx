@@ -10,7 +10,7 @@ export default function Projects() {
       style={{
         fontFamily: "'Space Mono', monospace",
         background: "#060608",
-        padding: "6rem 2rem",
+        padding: "6rem clamp(1rem, 4vw, 3rem)",
         position: "relative",
         overflow: "hidden",
       }}
@@ -30,7 +30,7 @@ export default function Projects() {
 
       <div
         style={{
-          maxWidth: 880,
+          maxWidth: "100%",
           margin: "0 auto",
           position: "relative",
           zIndex: 1,
@@ -87,12 +87,14 @@ export default function Projects() {
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
             gap: "1px",
             border: "1px solid rgba(255,255,255,0.07)",
             borderRadius: 6,
             overflow: "hidden",
             background: "rgba(255,255,255,0.07)",
+            maxWidth: "1200px",
+            margin: "0 auto",
           }}
         >
           {projects.map((project) => (

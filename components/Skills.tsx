@@ -11,7 +11,7 @@ export default function Skills() {
           grid-template-columns: 1fr 1fr;
           gap: 1.5rem 2.5rem;
         }
-        @media (max-width: 640px) {
+        @media (max-width: 768px) {
           .skills-grid { grid-template-columns: 1fr !important; }
         }
 
@@ -75,7 +75,7 @@ export default function Skills() {
         style={{
           fontFamily: "'Space Mono', monospace",
           background: "#060608",
-          padding: "6rem 2rem",
+          padding: "6rem clamp(1rem, 4vw, 3rem)",
           position: "relative",
           overflow: "hidden",
         }}
@@ -95,7 +95,7 @@ export default function Skills() {
 
         <div
           style={{
-            maxWidth: 820,
+            maxWidth: "100%",
             margin: "0 auto",
             position: "relative",
             zIndex: 1,

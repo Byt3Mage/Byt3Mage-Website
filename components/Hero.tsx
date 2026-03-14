@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from "react";
 const ROLES = [
   "Systems Programmer",
   "Game Engine Developer",
-  "Tools & Framework Engineer",
+  "Systems solutions Architect",
 ];
 
 const GLYPHS =
@@ -211,7 +211,7 @@ export default function Hero() {
           justifyContent: "center",
           position: "relative",
           overflow: "hidden",
-          padding: "6rem 2rem 5rem",
+          padding: "6rem clamp(1rem, 4vw, 3rem)",
           textAlign: "center",
         }}
       >
@@ -269,7 +269,7 @@ export default function Hero() {
         ))}
 
         {/* ── main content ── */}
-        <div style={{ position: "relative", zIndex: 10, maxWidth: 800, width: "100%" }}>
+        <div style={{ position: "relative", zIndex: 10, maxWidth: "100%", width: "100%", padding: "0 1rem" }}>
 
           {/* badge */}
           <div
