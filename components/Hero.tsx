@@ -40,6 +40,92 @@ const SPECS = [
   { k: "STATUS", v: "ONLINE ▪ BUILDING",                accent: false, ok: true  },
 ];
 
+const HERO_CSS = `
+  @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap');
+
+  :root {
+    --hero-bg:     #060608;
+    --hero-muted:  #4a4a5a;
+    --hero-txt:    #c8c8d8;
+    --hero-border: rgba(223,255,0,0.1);
+  }
+
+  @keyframes h-glitch-r {
+    0%,87%,100%{opacity:0;transform:none}
+    88%{opacity:.9;transform:translateX(4px)}
+    89%{opacity:.5;transform:translateX(-2px)}
+    90%{opacity:0}
+  }
+  @keyframes h-glitch-g {
+    0%,87%,100%{opacity:0;transform:none}
+    88%{opacity:.7;transform:translateX(-4px)}
+    89.5%{opacity:.4;transform:translateX(2px)}
+    91%{opacity:0}
+  }
+  @keyframes h-sweep  { 0%,100%{transform:translateX(-100%)} 50%{transform:translateX(100%)} }
+  @keyframes h-pulse  { 0%,100%{opacity:1} 50%{opacity:.3} }
+  @keyframes h-blink  { 0%,100%{opacity:1} 50%{opacity:0} }
+  @keyframes h-drop   { 0%{top:-100%} 100%{top:100%} }
+
+  /* ── terminal line colours ── */
+  .h-line {
+    display: block;
+    white-space: pre;
+    font-family: 'Space Mono', monospace;
+    font-size: .72rem;
+    line-height: 1.85;
+    color: var(--hero-txt);
+  }
+  .h-ps   { color: var(--accent); margin-right: 6px; }
+  .h-cmd  { color: var(--accent-secondary); }
+  .h-cmt  { color: var(--hero-muted); }
+  .h-key  { color: #C792EA; }
+  .h-val  { color: var(--accent); }
+  .h-val2 { color: #82AAFF; }
+  .h-ok   { color: #C3E88D; }
+  .h-dim  { color: var(--hero-muted); }
+  .h-cursor {
+    display: inline-block;
+    width: 7px; height: 1em;
+    background: var(--accent);
+    vertical-align: middle;
+    margin-left: 2px;
+    animation: h-blink 1s step-end infinite;
+  }
+
+  /* ── name glitch ghosts ── */
+  .h-ghost {
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 100%;
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: inherit;
+    letter-spacing: inherit;
+    line-height: inherit;
+    pointer-events: none;
+    opacity: 0;
+  }
+  .h-ghost-r {
+    color: #FF3366;
+    clip-path: polygon(0 55%,100% 55%,100% 72%,0 72%);
+    animation: h-glitch-r 5s steps(1) infinite;
+  }
+  .h-ghost-g {
+    color: #00FFB2;
+    clip-path: polygon(0 28%,100% 28%,100% 46%,0 46%);
+    animation: h-glitch-g 5s steps(1) infinite .5s;
+  }
+
+  /* ── mobile: wrap long terminal lines instead of overflow ── */
+  @media (max-width: 767px) {
+    .h-line {
+      font-size: .64rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+  }
+`;
+
 export default function Hero() {
   const [roleIndex,   setRoleIndex]   = useState(0);
   const [roleVisible, setRoleVisible] = useState(true);
@@ -188,100 +274,13 @@ export default function Hero() {
 
   return (
     <>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap');
-
-        :root {
-          --acc:    #DFFF00;
-          --acc2:   #00FFB2;
-          --bg:     #060608;
-          --muted:  #4a4a5a;
-          --dimmed: #2a2a38;
-          --txt:    #c8c8d8;
-          --border: rgba(223,255,0,0.1);
-        }
-
-        @keyframes h-glitch-r {
-          0%,87%,100%{opacity:0;transform:none}
-          88%{opacity:.9;transform:translateX(4px)}
-          89%{opacity:.5;transform:translateX(-2px)}
-          90%{opacity:0}
-        }
-        @keyframes h-glitch-g {
-          0%,87%,100%{opacity:0;transform:none}
-          88%{opacity:.7;transform:translateX(-4px)}
-          89.5%{opacity:.4;transform:translateX(2px)}
-          91%{opacity:0}
-        }
-        @keyframes h-sweep  { 0%,100%{transform:translateX(-100%)} 50%{transform:translateX(100%)} }
-        @keyframes h-pulse  { 0%,100%{opacity:1} 50%{opacity:.3} }
-        @keyframes h-blink  { 0%,100%{opacity:1} 50%{opacity:0} }
-        @keyframes h-drop   { 0%{top:-100%} 100%{top:100%} }
-
-        /* ── terminal line colours ── */
-        .h-line {
-          display: block;
-          white-space: pre;
-          font-family: 'Space Mono', monospace;
-          font-size: .72rem;
-          line-height: 1.85;
-          color: #c8c8d8;
-        }
-        .h-ps   { color: #DFFF00; margin-right: 6px; }
-        .h-cmd  { color: #00FFB2; }
-        .h-cmt  { color: #4a4a5a; }
-        .h-key  { color: #C792EA; }
-        .h-val  { color: #DFFF00; }
-        .h-val2 { color: #82AAFF; }
-        .h-ok   { color: #C3E88D; }
-        .h-dim  { color: #4a4a5a; }
-        .h-cursor {
-          display: inline-block;
-          width: 7px; height: 1em;
-          background: #DFFF00;
-          vertical-align: middle;
-          margin-left: 2px;
-          animation: h-blink 1s step-end infinite;
-        }
-
-        /* ── name glitch ghosts ── */
-        .h-ghost {
-          position: absolute; top: 0; left: 0;
-          width: 100%; height: 100%;
-          font-family: 'Syne', sans-serif;
-          font-weight: 800;
-          font-size: inherit;
-          letter-spacing: inherit;
-          line-height: inherit;
-          pointer-events: none;
-          opacity: 0;
-        }
-        .h-ghost-r {
-          color: #FF3366;
-          clip-path: polygon(0 55%,100% 55%,100% 72%,0 72%);
-          animation: h-glitch-r 5s steps(1) infinite;
-        }
-        .h-ghost-g {
-          color: #00FFB2;
-          clip-path: polygon(0 28%,100% 28%,100% 46%,0 46%);
-          animation: h-glitch-g 5s steps(1) infinite .5s;
-        }
-
-        /* ── mobile: wrap long terminal lines instead of overflow ── */
-        @media (max-width: 767px) {
-          .h-line {
-            font-size: .64rem;
-            white-space: pre-wrap;
-            word-break: break-all;
-          }
-        }
-      `}</style>
+      <style dangerouslySetInnerHTML={{ __html: HERO_CSS }} />
 
       {/* ════════════════ SECTION ════════════════ */}
       <section
         style={{
           fontFamily: "'Space Mono', monospace",
-          background: "var(--bg)",
+          background: "var(--hero-bg)",
           minHeight: "100svh",
           position: "relative",
           overflow: isMobile ? "visible" : "hidden",
@@ -322,8 +321,8 @@ export default function Hero() {
         <div style={{
           position: "relative", zIndex: 10,
           display: "flex", flexDirection: "column", justifyContent: "center",
-          borderRight:   isMobile ? "none" : "1px solid var(--border)",
-          borderBottom:  isMobile ? "1px solid var(--border)" : "none",
+          borderRight:   isMobile ? "none" : "1px solid var(--hero-border)",
+          borderBottom:  isMobile ? "1px solid var(--hero-border)" : "none",
           paddingRight:  isMobile ? 0 : "3rem",
           paddingBottom: isMobile ? "2.5rem" : 0,
           minHeight:     isMobile ? "auto" : "100svh",
@@ -346,7 +345,7 @@ export default function Hero() {
           {/* available badge */}
           <div style={{
             display: "inline-flex", alignItems: "center", gap: 6,
-            fontSize: ".58rem", color: "var(--muted)",
+            fontSize: ".58rem", color: "var(--hero-muted)",
             letterSpacing: ".14em", textTransform: "uppercase",
             border: "1px solid rgba(223,255,0,.12)",
             padding: ".3rem .8rem", borderRadius: 999,
@@ -363,7 +362,7 @@ export default function Hero() {
             }}/>
             <span style={{
               width: 6, height: 6, borderRadius: "50%",
-              background: "var(--acc)", boxShadow: "0 0 6px var(--acc)",
+              background: "var(--accent)", boxShadow: "0 0 6px var(--accent)",
               animation: "h-pulse 1.6s ease-in-out infinite", flexShrink: 0,
             }}/>
             Available for interesting projects
@@ -372,7 +371,7 @@ export default function Hero() {
           {/* sys label */}
           <p style={{
             fontSize: ".6rem", letterSpacing: ".2em",
-            textTransform: "uppercase", color: "var(--muted)",
+            textTransform: "uppercase", color: "var(--hero-muted)",
             marginBottom: "1.2rem",
             ...fade(show.sl),
           }}>
@@ -385,7 +384,7 @@ export default function Hero() {
               fontFamily: "'Syne', sans-serif",
               fontWeight: 800,
               fontSize: isMobile ? "clamp(3rem, 18vw, 5rem)" : "clamp(3.5rem, 9vw, 7rem)",
-              color: "var(--acc)",
+              color: "var(--accent)",
               letterSpacing: "-.04em",
               lineHeight: 0.95,
               textShadow: "0 0 80px rgba(223,255,0,.2)",
@@ -404,7 +403,7 @@ export default function Hero() {
           {/* handle */}
           <p style={{
             fontSize: isMobile ? ".6rem" : "clamp(.55rem, 1.1vw, .7rem)",
-            color: "var(--muted)",
+            color: "var(--hero-muted)",
             letterSpacing: ".3em", textTransform: "uppercase",
             marginTop: ".5rem", marginBottom: "1.6rem",
             ...fade(show.handle, ".1s"),
@@ -432,7 +431,7 @@ export default function Hero() {
             <span style={{
               display: "block",
               fontSize: isMobile ? ".65rem" : ".75rem",
-              color: "var(--acc2)",
+              color: "var(--accent-secondary)",
               letterSpacing: ".18em", textTransform: "uppercase",
               opacity:    roleVisible ? 1 : 0,
               transform:  roleVisible ? "translateY(0)" : "translateY(10px)",
@@ -455,15 +454,15 @@ export default function Hero() {
                 fontSize: isMobile ? ".6rem" : ".62rem",
               }}>
                 <span style={{
-                  color: "var(--muted)", letterSpacing: ".12em",
+                  color: "var(--hero-muted)", letterSpacing: ".12em",
                   textTransform: "uppercase",
                   width: isMobile ? 58 : 70, flexShrink: 0,
                 }}>
                   {k}
                 </span>
-                <span style={{ color: "var(--dimmed)", margin: "0 6px", flexShrink: 0 }}>::</span>
+                <span style={{ color: "var(--text-dimmed)", margin: "0 6px", flexShrink: 0 }}>::</span>
                 <span style={{
-                  color:      ok ? "#C3E88D" : accent ? "var(--acc)" : "var(--txt)",
+                  color:      ok ? "#C3E88D" : accent ? "var(--accent)" : "var(--hero-txt)",
                   fontWeight: accent ? 700 : 400,
                   letterSpacing: ".06em",
                   lineHeight: 1.4,
@@ -498,7 +497,7 @@ export default function Hero() {
                 padding: ".7rem 1.4rem",
                 minHeight: 48, /* WCAG tap target */
                 borderRadius: 3,
-                background: "var(--acc)", color: "#060608",
+                background: "var(--accent)", color: "#060608",
                 boxShadow: "0 0 18px rgba(223,255,0,.2)",
                 transition: "transform .2s, box-shadow .2s",
                 flex: isMobile ? 1 : "none",
@@ -529,7 +528,7 @@ export default function Hero() {
                 padding: ".7rem 1.4rem",
                 minHeight: 48,
                 borderRadius: 3,
-                background: "transparent", color: "var(--txt)",
+                background: "transparent", color: "var(--hero-txt)",
                 border: "1px solid rgba(200,200,216,.15)",
                 transition: "transform .2s, border-color .2s, color .2s",
                 flex: isMobile ? 1 : "none",
@@ -542,7 +541,7 @@ export default function Hero() {
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = "translateY(0)";
                 e.currentTarget.style.borderColor = "rgba(200,200,216,.15)";
-                e.currentTarget.style.color = "var(--txt)";
+                e.currentTarget.style.color = "var(--hero-txt)";
               }}
             >
               Get in touch
@@ -587,7 +586,7 @@ export default function Hero() {
               ))}
               <span style={{
                 marginLeft: "auto", marginRight: "auto",
-                fontSize: ".58rem", color: "var(--muted)",
+                fontSize: ".58rem", color: "var(--hero-muted)",
                 letterSpacing: ".12em", textTransform: "uppercase",
               }}>
                 byt3mage :: sysinfo
@@ -612,7 +611,7 @@ export default function Hero() {
               display: "flex", alignItems: "center", justifyContent: "space-between",
               padding: ".4rem 1.1rem",
               borderTop: "1px solid rgba(223,255,0,.06)",
-              fontSize: ".58rem", color: "var(--muted)",
+              fontSize: ".58rem", color: "var(--hero-muted)",
               letterSpacing: ".1em",
               opacity: termStatus ? 1 : 0,
               transition: "opacity .4s",
@@ -620,7 +619,7 @@ export default function Hero() {
               <span>
                 <span style={{
                   display: "inline-block", width: 5, height: 5, borderRadius: "50%",
-                  background: "var(--acc2)", marginRight: 5,
+                  background: "var(--accent-secondary)", marginRight: 5,
                   animation: "h-pulse 2s ease-in-out infinite",
                 }}/>
                 session active
@@ -647,7 +646,7 @@ export default function Hero() {
           }}
         >
           <span style={{
-            fontSize: ".5rem", color: "var(--muted)",
+            fontSize: ".5rem", color: "var(--hero-muted)",
             letterSpacing: ".2em", textTransform: "uppercase",
           }}>
             scroll
