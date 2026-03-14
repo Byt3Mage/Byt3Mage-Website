@@ -12,64 +12,74 @@ const GLYPHS =
   "01アイウエオカキクケコサシスセソタチツテトナニヌネノ∅∃∀∇∆⊕⊗ABCDEF0123456789";
 
 const TERM_LINES: { delay: number; html: string }[] = [
-  { delay: 200,  html: '<span class="prompt-sym">▶</span><span class="cmd">whoami</span>' },
-  { delay: 600,  html: '<span class="val">byt3mage</span> <span class="comment">// Ireoluwa Alayaki</span>' },
+  { delay: 200,  html: '<span class="h-ps">▶</span><span class="h-cmd">whoami</span>' },
+  { delay: 600,  html: '<span class="h-val">byt3mage</span> <span class="h-cmt">// Ireoluwa Alayaki</span>' },
   { delay: 900,  html: "" },
-  { delay: 1000, html: '<span class="prompt-sym">▶</span><span class="cmd">cat</span> <span class="val2">./profile.toml</span>' },
-  { delay: 1300, html: '<span class="key">[identity]</span>' },
-  { delay: 1450, html: '  name    <span class="dim">=</span> <span class="val">"Byt3Mage"</span>' },
-  { delay: 1580, html: '  focus   <span class="dim">=</span> <span class="val">"systems · engines · tools"</span>' },
-  { delay: 1710, html: '  years   <span class="dim">=</span> <span class="val2">∞</span>' },
+  { delay: 1000, html: '<span class="h-ps">▶</span><span class="h-cmd">cat</span> <span class="h-val2">./profile.toml</span>' },
+  { delay: 1300, html: '<span class="h-key">[identity]</span>' },
+  { delay: 1450, html: '  name    <span class="h-dim">=</span> <span class="h-val">"Byt3Mage"</span>' },
+  { delay: 1580, html: '  focus   <span class="h-dim">=</span> <span class="h-val">"systems · engines · tools"</span>' },
+  { delay: 1710, html: '  years   <span class="h-dim">=</span> <span class="h-val2">∞</span>' },
   { delay: 1850, html: "" },
-  { delay: 1900, html: '<span class="key">[stack]</span>' },
-  { delay: 2050, html: '  primary <span class="dim">=</span> [<span class="val">"C"</span>, <span class="val">"C++"</span>, <span class="val">"Rust"</span>]' },
-  { delay: 2200, html: '  target  <span class="dim">=</span> <span class="val">"bare metal"</span>' },
+  { delay: 1900, html: '<span class="h-key">[stack]</span>' },
+  { delay: 2050, html: '  primary <span class="h-dim">=</span> [<span class="h-val">"C"</span>, <span class="h-val">"C++"</span>, <span class="h-val">"Rust"</span>]' },
+  { delay: 2200, html: '  target  <span class="h-dim">=</span> <span class="h-val">"bare metal"</span>' },
   { delay: 2340, html: "" },
-  { delay: 2380, html: '<span class="prompt-sym">▶</span><span class="cmd">systemctl</span> status byt3mage' },
-  { delay: 2700, html: '  <span class="ok">● byt3mage.service</span>' },
-  { delay: 2850, html: '    Loaded: loaded <span class="comment">(production-ready)</span>' },
-  { delay: 2980, html: '    Active: <span class="ok">active (running)</span> <span class="comment">since epoch</span>' },
+  { delay: 2380, html: '<span class="h-ps">▶</span><span class="h-cmd">systemctl</span> status byt3mage' },
+  { delay: 2700, html: '  <span class="h-ok">● byt3mage.service</span>' },
+  { delay: 2850, html: '    Loaded: loaded <span class="h-cmt">(production-ready)</span>' },
+  { delay: 2980, html: '    Active: <span class="h-ok">active (running)</span> <span class="h-cmt">since epoch</span>' },
   { delay: 3100, html: "" },
-  { delay: 3150, html: '<span class="prompt-sym">▶</span> <span class="cursor-blink"></span>' },
+  { delay: 3150, html: '<span class="h-ps">▶</span> <span class="h-cursor"></span>' },
+];
+
+const SPECS = [
+  { k: "ARCH",   v: "x86_64 / ARM",                    accent: true,  ok: false },
+  { k: "LANG",   v: "C / C++ · Rust",                  accent: false, ok: false },
+  { k: "DOMAIN", v: "Game Engines · Low-level Systems", accent: false, ok: false },
+  { k: "STATUS", v: "ONLINE ▪ BUILDING",                accent: false, ok: true  },
 ];
 
 export default function Hero() {
-  const [roleIndex, setRoleIndex]   = useState(0);
+  const [roleIndex,   setRoleIndex]   = useState(0);
   const [roleVisible, setRoleVisible] = useState(true);
-  const [clock, setClock]           = useState("--:--:--");
-  const [termStatus, setTermStatus] = useState(false);
-  const [scrollHint, setScrollHint] = useState(false);
+  const [clock,       setClock]       = useState("--:--:--");
+  const [termStatus,  setTermStatus]  = useState(false);
+  const [scrollHint,  setScrollHint]  = useState(false);
+  const [isMobile,    setIsMobile]    = useState(false);
 
-  /* reveal states */
-  const [showBadge,  setShowBadge]  = useState(false);
-  const [showSl,     setShowSl]     = useState(false);
-  const [showName,   setShowName]   = useState(false);
-  const [showHandle, setShowHandle] = useState(false);
-  const [showDiv,    setShowDiv]    = useState(false);
-  const [showRole,   setShowRole]   = useState(false);
-  const [showRegs,   setShowRegs]   = useState(false);
-  const [showCtas,   setShowCtas]   = useState(false);
+  const [show, setShow] = useState({
+    badge: false, sl: false, name: false, handle: false,
+    div: false, role: false, regs: false, ctas: false, term: false,
+  });
 
-  const canvasRef  = useRef<HTMLCanvasElement>(null);
-  const dropsRef   = useRef<number[]>([]);
-  const frameRef   = useRef<number | null>(null);
+  const canvasRef   = useRef<HTMLCanvasElement>(null);
+  const dropsRef    = useRef<number[]>([]);
+  const frameRef    = useRef<number | null>(null);
   const termBodyRef = useRef<HTMLDivElement>(null);
+
+  /* ── detect mobile breakpoint ── */
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 767px)");
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
 
   /* ── staggered reveals ── */
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setShowBadge(true),  100),
-      setTimeout(() => setShowSl(true),     200),
-      setTimeout(() => setShowName(true),   150),
-      setTimeout(() => setShowHandle(true), 350),
-      setTimeout(() => setShowDiv(true),    500),
-      setTimeout(() => setShowRole(true),   600),
-      setTimeout(() => setShowRegs(true),   700),
-      setTimeout(() => setShowCtas(true),   900),
-      setTimeout(() => setTermStatus(true), 3200),
-      setTimeout(() => setScrollHint(true), 2600),
+    const seq: [keyof typeof show, number][] = [
+      ["badge",  100], ["sl",   200], ["name", 150],
+      ["handle", 350], ["div",  500], ["role", 600],
+      ["regs",   700], ["ctas", 900], ["term", 400],
     ];
-    return () => timers.forEach(clearTimeout);
+    const timers = seq.map(([key, delay]) =>
+      setTimeout(() => setShow((s) => ({ ...s, [key]: true })), delay)
+    );
+    const t1 = setTimeout(() => setTermStatus(true), 3200);
+    const t2 = setTimeout(() => setScrollHint(true), 2600);
+    return () => { timers.forEach(clearTimeout); clearTimeout(t1); clearTimeout(t2); };
   }, []);
 
   /* ── role rotator ── */
@@ -84,16 +94,18 @@ export default function Hero() {
     return () => clearInterval(iv);
   }, []);
 
-  /* ── clock ── */
+  /* ── live clock ── */
   useEffect(() => {
-    const iv = setInterval(() => {
+    const tick = () => {
       const n = new Date();
       setClock(
         [n.getHours(), n.getMinutes(), n.getSeconds()]
           .map((v) => String(v).padStart(2, "0"))
           .join(":")
       );
-    }, 1000);
+    };
+    tick();
+    const iv = setInterval(tick, 1000);
     return () => clearInterval(iv);
   }, []);
 
@@ -101,10 +113,11 @@ export default function Hero() {
   useEffect(() => {
     const body = termBodyRef.current;
     if (!body) return;
+    body.innerHTML = "";
     const timers = TERM_LINES.map(({ delay, html }) =>
       setTimeout(() => {
         const span = document.createElement("span");
-        span.className = "hero-term-line";
+        span.className = "h-line";
         span.innerHTML = html || "&nbsp;";
         body.appendChild(span);
         body.scrollTop = body.scrollHeight;
@@ -124,14 +137,13 @@ export default function Hero() {
     const resize = () => {
       W = canvas.offsetWidth;
       H = canvas.offsetHeight;
-      canvas.width = W;
+      canvas.width  = W;
       canvas.height = H;
       cols = Math.ceil(W / COL_W);
       const prev = dropsRef.current;
-      const next: number[] = [];
-      for (let i = 0; i < cols; i++)
-        next.push(prev[i] !== undefined ? prev[i] : Math.random() * -80);
-      dropsRef.current = next;
+      dropsRef.current = Array.from({ length: cols }, (_, i) =>
+        prev[i] !== undefined ? prev[i] : Math.random() * -80
+      );
     };
 
     const drawFrame = () => {
@@ -142,9 +154,8 @@ export default function Hero() {
       for (let i = 0; i < cols; i++) {
         const x = i * COL_W + 4;
         const y = drops[i] * 18;
-        const g = GLYPHS[Math.floor(Math.random() * GLYPHS.length)];
         ctx.fillStyle = "rgba(223,255,0,0.5)";
-        ctx.fillText(g, x, y);
+        ctx.fillText(GLYPHS[Math.floor(Math.random() * GLYPHS.length)], x, y);
         if (Math.random() > 0.5) {
           ctx.fillStyle = "rgba(223,255,0,0.15)";
           ctx.fillText(GLYPHS[Math.floor(Math.random() * GLYPHS.length)], x, y - 18);
@@ -162,12 +173,18 @@ export default function Hero() {
     resize();
     window.addEventListener("resize", resize);
     animate();
-
     return () => {
       window.removeEventListener("resize", resize);
       if (frameRef.current) cancelAnimationFrame(frameRef.current);
     };
   }, []);
+
+  /* ── fade helper ── */
+  const fade = (visible: boolean, extraDelay = "0s"): React.CSSProperties => ({
+    opacity:   visible ? 1 : 0,
+    transform: visible ? "translateY(0)" : "translateY(10px)",
+    transition: `opacity .4s ${extraDelay}, transform .4s ${extraDelay}`,
+  });
 
   return (
     <>
@@ -175,346 +192,316 @@ export default function Hero() {
         @import url('https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@400;700;800&display=swap');
 
         :root {
-          --acc:  #DFFF00;
-          --acc2: #00FFB2;
-          --bg:   #060608;
-          --bg2:  #0C0C10;
-          --muted: #4a4a5a;
+          --acc:    #DFFF00;
+          --acc2:   #00FFB2;
+          --bg:     #060608;
+          --muted:  #4a4a5a;
           --dimmed: #2a2a38;
-          --txt:  #c8c8d8;
+          --txt:    #c8c8d8;
           --border: rgba(223,255,0,0.1);
         }
 
-        /* ── keyframes ── */
-        @keyframes hero-glitch-r {
-          0%,87%,100% { opacity:0; transform:none; }
-          88%  { opacity:.9; transform:translateX(4px); }
-          89%  { opacity:.5; transform:translateX(-2px); }
-          90%  { opacity:0; }
+        @keyframes h-glitch-r {
+          0%,87%,100%{opacity:0;transform:none}
+          88%{opacity:.9;transform:translateX(4px)}
+          89%{opacity:.5;transform:translateX(-2px)}
+          90%{opacity:0}
         }
-        @keyframes hero-glitch-g {
-          0%,87%,100% { opacity:0; transform:none; }
-          88%  { opacity:.7; transform:translateX(-4px); }
-          89.5%{ opacity:.4; transform:translateX(2px); }
-          91%  { opacity:0; }
+        @keyframes h-glitch-g {
+          0%,87%,100%{opacity:0;transform:none}
+          88%{opacity:.7;transform:translateX(-4px)}
+          89.5%{opacity:.4;transform:translateX(2px)}
+          91%{opacity:0}
         }
-        @keyframes hero-badge-sweep {
-          0%,100% { transform:translateX(-100%); }
-          50%     { transform:translateX(100%); }
-        }
-        @keyframes hero-pulse-dot {
-          0%,100% { opacity:1; }
-          50%     { opacity:.3; }
-        }
-        @keyframes hero-blink {
-          0%,100% { opacity:1; }
-          50%     { opacity:0; }
-        }
-        @keyframes hero-scroll-drop {
-          0%   { top:-100%; }
-          100% { top:100%; }
-        }
-        @keyframes hero-status-pulse {
-          0%,100% { opacity:1; }
-          50%     { opacity:.3; }
-        }
-        @keyframes hero-name-in {
-          from { transform: translateY(100%); }
-          to   { transform: translateY(0); }
-        }
+        @keyframes h-sweep  { 0%,100%{transform:translateX(-100%)} 50%{transform:translateX(100%)} }
+        @keyframes h-pulse  { 0%,100%{opacity:1} 50%{opacity:.3} }
+        @keyframes h-blink  { 0%,100%{opacity:1} 50%{opacity:0} }
+        @keyframes h-drop   { 0%{top:-100%} 100%{top:100%} }
 
-        /* ── terminal lines ── */
-        .hero-term-line {
+        /* ── terminal line colours ── */
+        .h-line {
           display: block;
           white-space: pre;
+          font-family: 'Space Mono', monospace;
           font-size: .72rem;
           line-height: 1.85;
           color: #c8c8d8;
         }
-        .hero-term-line .prompt-sym { color: #DFFF00; margin-right: 6px; }
-        .hero-term-line .cmd        { color: #00FFB2; }
-        .hero-term-line .comment    { color: #4a4a5a; }
-        .hero-term-line .key        { color: #C792EA; }
-        .hero-term-line .val        { color: #DFFF00; }
-        .hero-term-line .val2       { color: #82AAFF; }
-        .hero-term-line .ok         { color: #C3E88D; }
-        .hero-term-line .dim        { color: #4a4a5a; }
-        .hero-term-line .cursor-blink {
+        .h-ps   { color: #DFFF00; margin-right: 6px; }
+        .h-cmd  { color: #00FFB2; }
+        .h-cmt  { color: #4a4a5a; }
+        .h-key  { color: #C792EA; }
+        .h-val  { color: #DFFF00; }
+        .h-val2 { color: #82AAFF; }
+        .h-ok   { color: #C3E88D; }
+        .h-dim  { color: #4a4a5a; }
+        .h-cursor {
           display: inline-block;
           width: 7px; height: 1em;
           background: #DFFF00;
           vertical-align: middle;
           margin-left: 2px;
-          animation: hero-blink 1s step-end infinite;
+          animation: h-blink 1s step-end infinite;
         }
 
-        /* ── name ghost layers ── */
-        .hero-name-ghost {
+        /* ── name glitch ghosts ── */
+        .h-ghost {
           position: absolute; top: 0; left: 0;
           width: 100%; height: 100%;
           font-family: 'Syne', sans-serif;
           font-weight: 800;
+          font-size: inherit;
+          letter-spacing: inherit;
+          line-height: inherit;
           pointer-events: none;
           opacity: 0;
         }
-        .hero-name-ghost.r {
+        .h-ghost-r {
           color: #FF3366;
           clip-path: polygon(0 55%,100% 55%,100% 72%,0 72%);
-          animation: hero-glitch-r 5s steps(1) infinite;
+          animation: h-glitch-r 5s steps(1) infinite;
         }
-        .hero-name-ghost.g {
+        .h-ghost-g {
           color: #00FFB2;
           clip-path: polygon(0 28%,100% 28%,100% 46%,0 46%);
-          animation: hero-glitch-g 5s steps(1) infinite 0.5s;
+          animation: h-glitch-g 5s steps(1) infinite .5s;
+        }
+
+        /* ── mobile: wrap long terminal lines instead of overflow ── */
+        @media (max-width: 767px) {
+          .h-line {
+            font-size: .64rem;
+            white-space: pre-wrap;
+            word-break: break-all;
+          }
         }
       `}</style>
 
+      {/* ════════════════ SECTION ════════════════ */}
       <section
         style={{
           fontFamily: "'Space Mono', monospace",
           background: "var(--bg)",
           minHeight: "100svh",
-          display: "grid",
-          gridTemplateColumns: "1fr 1fr",
-          alignItems: "center",
           position: "relative",
-          overflow: "hidden",
-          padding: "0 clamp(2rem,5vw,5rem)",
+          overflow: isMobile ? "visible" : "hidden",
+          display: "grid",
+          gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
+          alignItems: isMobile ? "start" : "center",
+          padding: isMobile
+            ? "5rem 1.5rem 5rem"          /* mobile: generous top/bottom breathing room */
+            : "0 clamp(2rem, 5vw, 5rem)", /* desktop: horizontal padding only */
+          rowGap: isMobile ? "2.5rem" : 0,
         }}
       >
-        {/* ── glyph rain ── */}
+        {/* glyph rain */}
         <canvas
           ref={canvasRef}
           aria-hidden
           style={{
             position: "absolute", inset: 0,
             width: "100%", height: "100%",
-            opacity: 0.3, pointerEvents: "none", zIndex: 0,
+            opacity: isMobile ? 0.15 : 0.3,
+            pointerEvents: "none", zIndex: 0,
           }}
         />
 
-        {/* ── scanlines ── */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1,
-            background: "repeating-linear-gradient(to bottom,transparent,transparent 3px,rgba(0,0,0,.12) 3px,rgba(0,0,0,.12) 4px)",
-          }}
-        />
+        {/* scanlines */}
+        <div aria-hidden style={{
+          position: "absolute", inset: 0, pointerEvents: "none", zIndex: 1,
+          background: "repeating-linear-gradient(to bottom,transparent,transparent 3px,rgba(0,0,0,.12) 3px,rgba(0,0,0,.12) 4px)",
+        }}/>
 
-        {/* ── vignette ── */}
-        <div
-          aria-hidden
-          style={{
-            position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2,
-            background: "radial-gradient(ellipse 90% 90% at 50% 50%,transparent 20%,rgba(6,6,8,.9) 100%)",
-          }}
-        />
+        {/* vignette */}
+        <div aria-hidden style={{
+          position: "absolute", inset: 0, pointerEvents: "none", zIndex: 2,
+          background: "radial-gradient(ellipse 90% 90% at 50% 50%,transparent 20%,rgba(6,6,8,.9) 100%)",
+        }}/>
 
-        {/* ══════════ LEFT COLUMN ══════════ */}
-        <div
-          style={{
-            position: "relative", zIndex: 10,
-            display: "flex", flexDirection: "column", justifyContent: "center",
-            paddingRight: "3rem",
-            borderRight: "1px solid var(--border)",
-            minHeight: "100svh",
-          }}
-        >
-          {/* corner bracket — top left */}
-          <svg
-            aria-hidden
-            width="28" height="28" viewBox="0 0 28 28" fill="none"
-            style={{ position: "absolute", top: "1.5rem", left: 0, opacity: .25 }}
-          >
+        {/* ════════════ LEFT — IDENTITY ════════════ */}
+        <div style={{
+          position: "relative", zIndex: 10,
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          borderRight:   isMobile ? "none" : "1px solid var(--border)",
+          borderBottom:  isMobile ? "1px solid var(--border)" : "none",
+          paddingRight:  isMobile ? 0 : "3rem",
+          paddingBottom: isMobile ? "2.5rem" : 0,
+          minHeight:     isMobile ? "auto" : "100svh",
+        }}>
+          {/* top-left corner bracket */}
+          <svg aria-hidden width="28" height="28" viewBox="0 0 28 28" fill="none"
+            style={{ position: "absolute", top: isMobile ? 0 : "1.5rem", left: 0, opacity: .25 }}>
             <path d="M2 24 L2 2 L24 2" stroke="#DFFF00" strokeWidth="1.5" strokeLinecap="square"/>
           </svg>
 
-          {/* dividing glow on border */}
-          <div
-            aria-hidden
-            style={{
+          {/* right-border vertical glow — desktop only */}
+          {!isMobile && (
+            <div aria-hidden style={{
               position: "absolute", right: -1, top: "20%", height: "60%", width: 1,
               background: "linear-gradient(to bottom,transparent,#DFFF00,transparent)",
               opacity: .35,
-            }}
-          />
+            }}/>
+          )}
 
           {/* available badge */}
-          <div
-            style={{
-              display: "inline-flex", alignItems: "center", gap: 6,
-              fontSize: ".58rem", color: "var(--muted)",
-              letterSpacing: ".14em", textTransform: "uppercase",
-              border: "1px solid rgba(223,255,0,.12)",
-              padding: ".3rem .8rem", borderRadius: 999,
-              marginBottom: "1.4rem",
-              position: "relative", overflow: "hidden",
-              width: "fit-content",
-              opacity: showBadge ? 1 : 0,
-              transition: "opacity .4s",
-            }}
-          >
-            <span
-              aria-hidden
-              style={{
-                position: "absolute", inset: 0,
-                background: "linear-gradient(90deg,transparent,rgba(223,255,0,.04),transparent)",
-                animation: "hero-badge-sweep 3s ease-in-out infinite",
-              }}
-            />
-            <span
-              style={{
-                width: 6, height: 6, borderRadius: "50%",
-                background: "var(--acc)",
-                boxShadow: "0 0 6px var(--acc)",
-                animation: "hero-pulse-dot 1.6s ease-in-out infinite",
-                flexShrink: 0,
-              }}
-            />
+          <div style={{
+            display: "inline-flex", alignItems: "center", gap: 6,
+            fontSize: ".58rem", color: "var(--muted)",
+            letterSpacing: ".14em", textTransform: "uppercase",
+            border: "1px solid rgba(223,255,0,.12)",
+            padding: ".3rem .8rem", borderRadius: 999,
+            marginBottom: "1.4rem",
+            marginTop: isMobile ? ".25rem" : 0,
+            position: "relative", overflow: "hidden",
+            width: "fit-content",
+            ...fade(show.badge),
+          }}>
+            <span aria-hidden style={{
+              position: "absolute", inset: 0,
+              background: "linear-gradient(90deg,transparent,rgba(223,255,0,.04),transparent)",
+              animation: "h-sweep 3s ease-in-out infinite",
+            }}/>
+            <span style={{
+              width: 6, height: 6, borderRadius: "50%",
+              background: "var(--acc)", boxShadow: "0 0 6px var(--acc)",
+              animation: "h-pulse 1.6s ease-in-out infinite", flexShrink: 0,
+            }}/>
             Available for interesting projects
           </div>
 
-          {/* sys.identity label */}
-          <p
-            style={{
-              fontSize: ".6rem", letterSpacing: ".2em",
-              textTransform: "uppercase", color: "var(--muted)",
-              marginBottom: "1.4rem",
-              opacity: showSl ? 1 : 0,
-              transform: showSl ? "none" : "translateY(8px)",
-              transition: "opacity .4s, transform .4s",
-            }}
-          >
+          {/* sys label */}
+          <p style={{
+            fontSize: ".6rem", letterSpacing: ".2em",
+            textTransform: "uppercase", color: "var(--muted)",
+            marginBottom: "1.2rem",
+            ...fade(show.sl),
+          }}>
             // sys.identity
           </p>
 
           {/* name */}
           <div style={{ overflow: "hidden", marginBottom: ".3rem" }}>
-            <h1
-              style={{
-                fontFamily: "'Syne', sans-serif",
-                fontWeight: 800,
-                fontSize: "clamp(3.5rem,9vw,7rem)",
-                color: "var(--acc)",
-                letterSpacing: "-.04em",
-                lineHeight: 0.95,
-                textShadow: "0 0 80px rgba(223,255,0,.2)",
-                transform: showName ? "translateY(0)" : "translateY(100%)",
-                transition: "transform .7s cubic-bezier(.16,1,.3,1)",
-                display: "block",
-                position: "relative",
-                margin: 0,
-              }}
-            >
+            <h1 style={{
+              fontFamily: "'Syne', sans-serif",
+              fontWeight: 800,
+              fontSize: isMobile ? "clamp(3rem, 18vw, 5rem)" : "clamp(3.5rem, 9vw, 7rem)",
+              color: "var(--acc)",
+              letterSpacing: "-.04em",
+              lineHeight: 0.95,
+              textShadow: "0 0 80px rgba(223,255,0,.2)",
+              transform: show.name ? "translateY(0)" : "translateY(100%)",
+              transition: "transform .7s cubic-bezier(.16,1,.3,1)",
+              display: "block",
+              position: "relative",
+              margin: 0,
+            }}>
               Byt3Mage
-              <span className="hero-name-ghost r" aria-hidden>Byt3Mage</span>
-              <span className="hero-name-ghost g" aria-hidden>Byt3Mage</span>
+              <span className="h-ghost h-ghost-r" aria-hidden>Byt3Mage</span>
+              <span className="h-ghost h-ghost-g" aria-hidden>Byt3Mage</span>
             </h1>
           </div>
 
           {/* handle */}
-          <p
-            style={{
-              fontSize: "clamp(.55rem,1.1vw,.7rem)",
-              color: "var(--muted)",
-              letterSpacing: ".3em",
-              textTransform: "uppercase",
-              marginTop: ".5rem",
-              marginBottom: "1.8rem",
-              opacity: showHandle ? 1 : 0,
-              transition: "opacity .4s .3s",
-            }}
-          >
+          <p style={{
+            fontSize: isMobile ? ".6rem" : "clamp(.55rem, 1.1vw, .7rem)",
+            color: "var(--muted)",
+            letterSpacing: ".3em", textTransform: "uppercase",
+            marginTop: ".5rem", marginBottom: "1.6rem",
+            ...fade(show.handle, ".1s"),
+          }}>
             Ireoluwa Alayaki
           </p>
 
           {/* divider */}
-          <div
-            style={{
-              display: "flex", alignItems: "center", gap: 10,
-              marginBottom: "1.6rem",
-              opacity: showDiv ? 1 : 0,
-              transition: "opacity .4s .5s",
-            }}
-          >
+          <div style={{
+            display: "flex", alignItems: "center", gap: 10,
+            marginBottom: "1.4rem",
+            ...fade(show.div, ".2s"),
+          }}>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg,var(--border),transparent)" }}/>
             <div style={{ width: 5, height: 5, background: "var(--acc)", transform: "rotate(45deg)", opacity: .5 }}/>
             <div style={{ flex: 1, height: 1, background: "linear-gradient(90deg,transparent,var(--border))" }}/>
           </div>
 
           {/* role rotator */}
-          <div
-            style={{
-              height: "1.4rem", overflow: "hidden",
-              marginBottom: "1.4rem",
-              opacity: showRole ? 1 : 0,
-              transition: "opacity .4s .55s",
-            }}
-          >
-            <span
-              style={{
-                display: "block",
-                fontSize: ".75rem",
-                color: "var(--acc2)",
-                letterSpacing: ".18em",
-                textTransform: "uppercase",
-                opacity: roleVisible ? 1 : 0,
-                transform: roleVisible ? "translateY(0)" : "translateY(10px)",
-                transition: "opacity .25s, transform .25s",
-              }}
-            >
+          <div style={{
+            height: "1.4rem", overflow: "hidden",
+            marginBottom: "1.4rem",
+            ...fade(show.role, ".25s"),
+          }}>
+            <span style={{
+              display: "block",
+              fontSize: isMobile ? ".65rem" : ".75rem",
+              color: "var(--acc2)",
+              letterSpacing: ".18em", textTransform: "uppercase",
+              opacity:    roleVisible ? 1 : 0,
+              transform:  roleVisible ? "translateY(0)" : "translateY(10px)",
+              transition: "opacity .25s, transform .25s",
+            }}>
               {ROLES[roleIndex]}
             </span>
           </div>
 
-          {/* register-style specs */}
-          <div
-            style={{
-              display: "flex", flexDirection: "column", gap: ".5rem",
-              marginBottom: "2rem",
-              opacity: showRegs ? 1 : 0,
-              transition: "opacity .4s .7s",
-            }}
-          >
-            {[
-              { k: "ARCH",   v: <><span style={{ color: "var(--acc)", fontWeight: 700 }}>x86_64 / ARM</span></> },
-              { k: "LANG",   v: <>C / C++ <span style={{ color: "var(--dimmed)" }}>·</span> Rust</> },
-              { k: "DOMAIN", v: <>Game Engines <span style={{ color: "var(--dimmed)" }}>·</span> Low-level Systems</> },
-              { k: "STATUS", v: <span style={{ color: "#C3E88D" }}>ONLINE ▪ BUILDING</span> },
-            ].map(({ k, v }) => (
-              <div key={k} style={{ display: "flex", alignItems: "center", fontSize: ".62rem" }}>
-                <span style={{ color: "var(--muted)", letterSpacing: ".12em", textTransform: "uppercase", width: 70, flexShrink: 0 }}>
+          {/* register specs */}
+          <div style={{
+            display: "flex", flexDirection: "column",
+            gap: isMobile ? ".55rem" : ".5rem",
+            marginBottom: "2rem",
+            ...fade(show.regs, ".35s"),
+          }}>
+            {SPECS.map(({ k, v, accent, ok }) => (
+              <div key={k} style={{
+                display: "flex", alignItems: "flex-start",
+                fontSize: isMobile ? ".6rem" : ".62rem",
+              }}>
+                <span style={{
+                  color: "var(--muted)", letterSpacing: ".12em",
+                  textTransform: "uppercase",
+                  width: isMobile ? 58 : 70, flexShrink: 0,
+                }}>
                   {k}
                 </span>
-                <span style={{ color: "var(--dimmed)", margin: "0 6px" }}>::</span>
-                <span style={{ color: "var(--txt)", letterSpacing: ".06em" }}>{v}</span>
+                <span style={{ color: "var(--dimmed)", margin: "0 6px", flexShrink: 0 }}>::</span>
+                <span style={{
+                  color:      ok ? "#C3E88D" : accent ? "var(--acc)" : "var(--txt)",
+                  fontWeight: accent ? 700 : 400,
+                  letterSpacing: ".06em",
+                  lineHeight: 1.4,
+                  wordBreak: "break-word",
+                }}>
+                  {v}
+                </span>
               </div>
             ))}
           </div>
 
           {/* CTAs */}
-          <div
-            style={{
-              display: "flex", gap: ".8rem", flexWrap: "wrap",
-              opacity: showCtas ? 1 : 0,
-              transition: "opacity .4s .85s",
-            }}
-          >
+          <div style={{
+            display: "flex",
+            gap: ".8rem",
+            flexWrap: "nowrap",
+            width: isMobile ? "100%" : "auto",
+            ...fade(show.ctas, ".5s"),
+          }}>
+            {/* primary */}
             <a
               href="https://github.com/Byt3Mage"
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                display: "inline-flex", alignItems: "center", gap: 7,
+                display: "inline-flex", alignItems: "center",
+                justifyContent: "center", gap: 7,
                 fontFamily: "'Space Mono', monospace",
                 fontSize: ".68rem", fontWeight: 700,
                 letterSpacing: ".1em", textTransform: "uppercase",
                 textDecoration: "none",
-                padding: ".65rem 1.4rem", borderRadius: 3,
+                padding: ".7rem 1.4rem",
+                minHeight: 48, /* WCAG tap target */
+                borderRadius: 3,
                 background: "var(--acc)", color: "#060608",
                 boxShadow: "0 0 18px rgba(223,255,0,.2)",
                 transition: "transform .2s, box-shadow .2s",
+                flex: isMobile ? 1 : "none",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-2px)";
@@ -528,18 +515,24 @@ export default function Hero() {
               <GithubIcon />
               GitHub
             </a>
+
+            {/* outline */}
             <a
               href="#contact"
               style={{
-                display: "inline-flex", alignItems: "center", gap: 7,
+                display: "inline-flex", alignItems: "center",
+                justifyContent: "center", gap: 7,
                 fontFamily: "'Space Mono', monospace",
                 fontSize: ".68rem",
                 letterSpacing: ".1em", textTransform: "uppercase",
                 textDecoration: "none",
-                padding: ".65rem 1.4rem", borderRadius: 3,
+                padding: ".7rem 1.4rem",
+                minHeight: 48,
+                borderRadius: 3,
                 background: "transparent", color: "var(--txt)",
                 border: "1px solid rgba(200,200,216,.15)",
                 transition: "transform .2s, border-color .2s, color .2s",
+                flex: isMobile ? 1 : "none",
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = "translateY(-2px)";
@@ -556,91 +549,80 @@ export default function Hero() {
             </a>
           </div>
 
-          {/* corner bracket — bottom left */}
-          <svg
-            aria-hidden
-            width="28" height="28" viewBox="0 0 28 28" fill="none"
-            style={{ position: "absolute", bottom: "1.5rem", left: 0, opacity: .25, transform: "scaleY(-1)" }}
-          >
-            <path d="M2 24 L2 2 L24 2" stroke="#DFFF00" strokeWidth="1.5" strokeLinecap="square"/>
-          </svg>
+          {/* bottom-left corner bracket — desktop only */}
+          {!isMobile && (
+            <svg aria-hidden width="28" height="28" viewBox="0 0 28 28" fill="none"
+              style={{ position: "absolute", bottom: "1.5rem", left: 0, opacity: .25, transform: "scaleY(-1)" }}>
+              <path d="M2 24 L2 2 L24 2" stroke="#DFFF00" strokeWidth="1.5" strokeLinecap="square"/>
+            </svg>
+          )}
         </div>
 
-        {/* ══════════ RIGHT COLUMN — terminal ══════════ */}
-        <div
-          style={{
-            position: "relative", zIndex: 10,
-            display: "flex", flexDirection: "column", justifyContent: "center",
-            paddingLeft: "3rem",
-          }}
-        >
-          <div
-            style={{
-              background: "rgba(12,12,16,.85)",
-              border: "1px solid rgba(223,255,0,.08)",
-              borderRadius: 6,
-              overflow: "hidden",
-              maxWidth: 480,
-              width: "100%",
-            }}
-          >
-            {/* terminal title bar */}
-            <div
-              style={{
-                display: "flex", alignItems: "center", gap: 6,
-                padding: ".5rem .8rem",
-                background: "rgba(223,255,0,.04)",
-                borderBottom: "1px solid rgba(223,255,0,.07)",
-              }}
-            >
-              {[
-                { bg: "#FF5F57" },
-                { bg: "#FEBC2E" },
-                { bg: "#28C840" },
-              ].map(({ bg }, i) => (
+        {/* ════════════ RIGHT — TERMINAL ════════════ */}
+        <div style={{
+          position: "relative", zIndex: 10,
+          display: "flex", flexDirection: "column", justifyContent: "center",
+          paddingLeft: isMobile ? 0 : "3rem",
+          opacity: show.term ? 1 : 0,
+          transform: show.term ? "translateY(0)" : "translateY(16px)",
+          transition: "opacity .5s .3s, transform .5s .3s",
+        }}>
+          <div style={{
+            background: "rgba(12,12,16,.9)",
+            border: "1px solid rgba(223,255,0,.08)",
+            borderRadius: 6,
+            overflow: "hidden",
+            width: "100%",
+            maxWidth: isMobile ? "100%" : 480,
+          }}>
+            {/* title bar */}
+            <div style={{
+              display: "flex", alignItems: "center", gap: 6,
+              padding: ".5rem .8rem",
+              background: "rgba(223,255,0,.04)",
+              borderBottom: "1px solid rgba(223,255,0,.07)",
+            }}>
+              {["#FF5F57", "#FEBC2E", "#28C840"].map((bg, i) => (
                 <span key={i} style={{ width: 8, height: 8, borderRadius: "50%", background: bg, opacity: .7 }}/>
               ))}
-              <span
-                style={{
-                  marginLeft: "auto", marginRight: "auto",
-                  fontSize: ".58rem", color: "var(--muted)",
-                  letterSpacing: ".12em", textTransform: "uppercase",
-                }}
-              >
+              <span style={{
+                marginLeft: "auto", marginRight: "auto",
+                fontSize: ".58rem", color: "var(--muted)",
+                letterSpacing: ".12em", textTransform: "uppercase",
+              }}>
                 byt3mage :: sysinfo
               </span>
             </div>
 
-            {/* terminal body */}
+            {/* body */}
             <div
               ref={termBodyRef}
               style={{
-                padding: "1.2rem 1.2rem 1.4rem",
-                minHeight: 320,
+                padding: "1.1rem 1.1rem 1.3rem",
+                minHeight: isMobile ? 180 : 300,
+                maxHeight: isMobile ? 220 : 360,
                 overflowY: "auto",
+                overflowX: "hidden",
+                overscrollBehavior: "contain",
               }}
             />
 
             {/* status bar */}
-            <div
-              style={{
-                display: "flex", alignItems: "center", justifyContent: "space-between",
-                padding: ".4rem 1.2rem",
-                borderTop: "1px solid rgba(223,255,0,.06)",
-                fontSize: ".58rem", color: "var(--muted)",
-                letterSpacing: ".1em",
-                opacity: termStatus ? 1 : 0,
-                transition: "opacity .4s",
-              }}
-            >
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "space-between",
+              padding: ".4rem 1.1rem",
+              borderTop: "1px solid rgba(223,255,0,.06)",
+              fontSize: ".58rem", color: "var(--muted)",
+              letterSpacing: ".1em",
+              opacity: termStatus ? 1 : 0,
+              transition: "opacity .4s",
+            }}>
               <span>
-                <span
-                  style={{
-                    display: "inline-block", width: 5, height: 5, borderRadius: "50%",
-                    background: "var(--acc2)", marginRight: 5,
-                    animation: "hero-status-pulse 2s ease-in-out infinite",
-                  }}
-                />
+                <span style={{
+                  display: "inline-block", width: 5, height: 5, borderRadius: "50%",
+                  background: "var(--acc2)", marginRight: 5,
+                  animation: "h-pulse 2s ease-in-out infinite",
+                }}/>
                 session active
               </span>
               <span style={{ fontVariantNumeric: "tabular-nums" }}>{clock}</span>
@@ -654,38 +636,33 @@ export default function Hero() {
           href="#about"
           aria-label="Scroll down"
           style={{
-            position: "absolute", bottom: "2rem", left: "50%",
+            position: "absolute",
+            bottom: isMobile ? "1rem" : "2rem",
+            left: "50%",
             transform: "translateX(-50%)",
             display: "flex", flexDirection: "column", alignItems: "center", gap: 5,
             zIndex: 10, textDecoration: "none",
             opacity: scrollHint ? 1 : 0,
-            transition: "opacity .4s 2.5s",
+            transition: "opacity .4s",
           }}
         >
-          <span
-            style={{
-              fontSize: ".5rem", color: "var(--muted)",
-              letterSpacing: ".2em", textTransform: "uppercase",
-            }}
-          >
+          <span style={{
+            fontSize: ".5rem", color: "var(--muted)",
+            letterSpacing: ".2em", textTransform: "uppercase",
+          }}>
             scroll
           </span>
-          <div
-            style={{
-              width: 1, height: 30,
-              background: "rgba(223,255,0,.12)",
-              position: "relative", overflow: "hidden",
-            }}
-          >
-            <span
-              aria-hidden
-              style={{
-                position: "absolute", top: "-100%", left: 0,
-                width: "100%", height: "100%",
-                background: "linear-gradient(to bottom,transparent,#DFFF00)",
-                animation: "hero-scroll-drop 2s ease-in-out infinite",
-              }}
-            />
+          <div style={{
+            width: 1, height: isMobile ? 20 : 30,
+            background: "rgba(223,255,0,.12)",
+            position: "relative", overflow: "hidden",
+          }}>
+            <span aria-hidden style={{
+              position: "absolute", top: "-100%", left: 0,
+              width: "100%", height: "100%",
+              background: "linear-gradient(to bottom,transparent,#DFFF00)",
+              animation: "h-drop 2s ease-in-out infinite",
+            }}/>
           </div>
         </a>
       </section>
@@ -695,7 +672,7 @@ export default function Hero() {
 
 function GithubIcon() {
   return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
       <path d="M12 0C5.374 0 0 5.373 0 12c0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23A11.509 11.509 0 0112 5.803c1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576C20.566 21.797 24 17.3 24 12c0-6.627-5.373-12-12-12z"/>
     </svg>
   );
