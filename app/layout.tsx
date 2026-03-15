@@ -47,6 +47,11 @@ export const metadata: Metadata = {
     creator: "@i_alayaki",
     images: ["/og-image.png"],
   },
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
+  },
   robots: { index: true, follow: true },
 };
 
