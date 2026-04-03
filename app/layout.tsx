@@ -16,7 +16,10 @@ const syne = Syne({
   display: "swap",
 });
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://byt3mage.dev";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(baseUrl),
   title: "Byt3Mage — Systems Programmer & Game Developer",
   description:
     "Ireoluwa Alayaki (Byt3Mage) — Systems programmer, game engine developer, and tools/framework engineer. Building high-performance systems, engines, and developer tools.",
@@ -34,7 +37,7 @@ export const metadata: Metadata = {
     title: "Byt3Mage — Systems Programmer & Game Developer",
     description:
       "Building high-performance systems, engines, and developer tools.",
-    url: "https://byt3mage.dev",
+    url: baseUrl,
     siteName: "Byt3Mage",
     images: [{ url: "/og-image.png", width: 1200, height: 630 }],
     type: "website",

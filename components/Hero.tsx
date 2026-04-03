@@ -676,7 +676,7 @@ export default function Hero() {
             marginBottom: "1.2rem",
             ...fade(show.sl),
           }}>
-            // sys.identity
+            {`// sys.identity`}
           </p>
 
           {/* HUD row: ring + hex counter */}

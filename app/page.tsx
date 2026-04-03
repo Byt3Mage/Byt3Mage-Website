@@ -6,8 +6,7 @@ import Skills from "@/components/Skills";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
 
-export const dynamic = 'force-dynamic';
-
+// Allow static generation - no real-time data needed
 export default function HomePage() {
   return (
     <>
